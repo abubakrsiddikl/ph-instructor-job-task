@@ -28,6 +28,19 @@ const registerUser = async (payload: RegisterUserPayload) => {
   return safeUser;
 };
 
+const getProfile = async (userId: string) => {
+  const user = await db.orm.public.User.first({
+    id: userId as string,
+  });
+  if (!user) {
+    throw new AppError(404, "User not found");
+  }
+
+  const { passwordHash: _passwordHash, ...safeUser } = user;
+  return safeUser;
+};
+
 export const UserService = {
   registerUser,
+  getProfile,
 };

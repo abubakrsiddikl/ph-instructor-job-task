@@ -1,6 +1,6 @@
 #!/usr/bin/env -S node
-import type { Contract as End } from '../../snapshots/06817548c2a05bd340dc99c6f6fe61204648ed101f14613205c0827a18c96a05/contract';
-import endContract from '../../snapshots/06817548c2a05bd340dc99c6f6fe61204648ed101f14613205c0827a18c96a05/contract.json' with { type: 'json' };
+import type { Contract as End } from '../../snapshots/a55022cbb2d729400561ba49319ede21190fed90c25ddd6b240127d736b9e9d9/contract';
+import endContract from '../../snapshots/a55022cbb2d729400561ba49319ede21190fed90c25ddd6b240127d736b9e9d9/contract.json' with { type: 'json' };
 import {
   Migration,
   MigrationCLI,
@@ -27,7 +27,7 @@ export default class M extends Migration<never, End> {
             codecRef: { codecId: 'pg/timestamptz-temporal@1' },
           }),
           col('description', 'text', { notNull: true, codecRef: { codecId: 'pg/text@1' } }),
-          col('id', 'SERIAL', { notNull: true, codecRef: { codecId: 'pg/int4@1' } }),
+          col('id', 'text', { notNull: true, codecRef: { codecId: 'pg/text@1' } }),
           col('liveUrl', 'text', { codecRef: { codecId: 'pg/text@1' } }),
           col('name', 'text', { notNull: true, codecRef: { codecId: 'pg/text@1' } }),
           col('repositoryUrl', 'text', { notNull: true, codecRef: { codecId: 'pg/text@1' } }),
@@ -36,7 +36,7 @@ export default class M extends Migration<never, End> {
             default: lit('PENDING'),
             codecRef: { codecId: 'pg/text@1' },
           }),
-          col('studentId', 'int4', { notNull: true, codecRef: { codecId: 'pg/int4@1' } }),
+          col('studentId', 'text', { notNull: true, codecRef: { codecId: 'pg/text@1' } }),
           col('updatedAt', 'timestamptz', {
             notNull: true,
             default: fn('now()'),
@@ -61,7 +61,7 @@ export default class M extends Migration<never, End> {
             codecRef: { codecId: 'pg/timestamptz-temporal@1' },
           }),
           col('email', 'text', { notNull: true, codecRef: { codecId: 'pg/text@1' } }),
-          col('id', 'SERIAL', { notNull: true, codecRef: { codecId: 'pg/int4@1' } }),
+          col('id', 'text', { notNull: true, codecRef: { codecId: 'pg/text@1' } }),
           col('name', 'text', { notNull: true, codecRef: { codecId: 'pg/text@1' } }),
           col('passwordHash', 'text', { notNull: true, codecRef: { codecId: 'pg/text@1' } }),
           col('role', 'text', {

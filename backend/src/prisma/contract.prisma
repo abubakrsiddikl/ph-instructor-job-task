@@ -1,21 +1,19 @@
 // use prisma-8
-
-
 enum UserRole {
   STUDENT
   ADMIN
 }
 
 model User {
-  id           Int      @id @default(autoincrement())
+  id           String    @id @default(uuid())
   name         String
-  email        String   @unique
+  email        String    @unique
   passwordHash String
-  role         UserRole @default(STUDENT)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @default(now())
+  role         UserRole  @default(STUDENT)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @default(now())
 
-  projects Project[]
+  projects     Project[]
 }
 
 enum ProjectStatus {
@@ -25,17 +23,17 @@ enum ProjectStatus {
 }
 
 model Project {
-  id            Int           @id @default(autoincrement())
+  id            String        @id @default(uuid())
   name          String
   repositoryUrl String        @unique
   liveUrl       String?
   description   String
   status        ProjectStatus @default(PENDING)
-  studentId     Int
+  studentId     String
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @default(now())
 
-  student User @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  student       User          @relation(fields: [studentId], references: [id], onDelete: Cascade)
 
   @@index([studentId, createdAt])
   @@index([status, createdAt])
