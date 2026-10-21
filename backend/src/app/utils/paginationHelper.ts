@@ -1,8 +1,8 @@
 type IOptions = {
-    page?: number,
-    limit?: number,
-    sortOrder?: string,
-    sortBy?: string
+    page?: unknown,
+    limit?: unknown,
+    sortOrder?: unknown,
+    sortBy?: unknown
 }
 
 type IOptionsResult = {
@@ -14,13 +14,21 @@ type IOptionsResult = {
 }
 
 const calculatePagination = (options: IOptions): IOptionsResult => {
+    const requestedPage = Number(options.page);
+    const requestedLimit = Number(options.limit);
+    const page = Number.isFinite(requestedPage) && requestedPage > 0
+        ? Math.floor(requestedPage)
+        : 1;
+    const limit = Number.isFinite(requestedLimit) && requestedLimit > 0
+        ? Math.min(Math.floor(requestedLimit), 100)
+        : 10;
+    const skip = (page - 1) * limit;
 
-    const page: number = Number(options.page) || 1;
-    const limit: number = Number(options.limit) || 10;
-    const skip: number = (Number(page) - 1) * limit;
-
-    const sortBy: string = options.sortBy || 'createdAt';
-    const sortOrder: string = options.sortOrder || 'desc';
+    const sortBy = typeof options.sortBy === 'string' ? options.sortBy : 'createdAt';
+    const requestedSortOrder = typeof options.sortOrder === 'string'
+        ? options.sortOrder.toLowerCase()
+        : 'desc';
+    const sortOrder = requestedSortOrder === 'asc' ? 'asc' : 'desc';
 
     return {
         page,
