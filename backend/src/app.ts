@@ -11,9 +11,15 @@ import httpStatus from "http-status";
 import cookieParser from "cookie-parser";
 import router from "./app/routes";
 import globalErrorHandler from "./app/middleware/globalErrorHandler";
+import config from "./app/config";
 
 const app: Application = express();
-app.use(cors());
+app.use(
+  cors({
+    origin: config.frontend_url,
+    credentials: true,
+  }),
+);
 app.use(cookieParser());
 
 //parser
