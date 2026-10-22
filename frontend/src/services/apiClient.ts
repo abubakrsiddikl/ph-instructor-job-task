@@ -6,10 +6,11 @@ import { env } from "@/config/env";
 
 export async function apiRequest<T>(
   endpoint: string,
-  options?: RequestInit
+  options?: RequestInit,
 ): Promise<IResponse<T>> {
   const token = await getCookie("accessToken");
 
+  // console.log("token", token);
   const defaultHeaders: HeadersInit = {
     ...(options?.body instanceof FormData
       ? {}

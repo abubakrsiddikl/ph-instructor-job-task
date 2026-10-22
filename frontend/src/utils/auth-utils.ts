@@ -21,13 +21,13 @@ export const commonProtectedRoutes: RouteConfig = {
 
 // student
 export const studentProtectedRoutes: RouteConfig = {
-  exact: ["/add-project"],
+  exact: [],
   pattern: [/^\/student/],
 };
 
 // MENTOR
 export const mentorProtectedRoutes: RouteConfig = {
-  exact: ["projects"],
+  exact: [],
   pattern: [/^\/mentor/],
 };
 

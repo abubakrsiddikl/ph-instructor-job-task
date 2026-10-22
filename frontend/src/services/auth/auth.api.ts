@@ -1,83 +1,102 @@
-'use server';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use server";
 
 import { registerZodSchema } from "@/zodSchema/auth.schema";
 import { loginZodSchema } from "@/zodSchema/auth.schema";
-import type { AuthActionState } from "@/types/auth.type";
+import type { ILoginResponse, IUser, TRole } from "@/types/auth.type";
 import { apiRequest } from "../apiClient";
-
-type AuthResponse = {
-  accessToken?: string;
-  refreshToken?: string;
-  user?: { id: string; name: string; email: string; role: "STUDENT" | "ADMIN" };
-};
-
-type ApiAuthResponse = {
-  success: boolean;
-  message: string;
-  errorSources?: { path: string; message: string }[];
-  data?: AuthResponse;
-};
-
-const validationErrors = (issues: { path: PropertyKey[]; message: string }[]) =>
-  issues.map((issue) => ({ field: String(issue.path[0] ?? ""), message: issue.message }));
-
-const toActionState = (response: ApiAuthResponse): AuthActionState => ({
-  success: response.success,
-  message: response.message,
-  errors: response.errorSources?.map((error) => ({
-    field: error.path,
-    message: error.message,
-  })) ?? [],
-  data: response.data,
-});
+import { redirect } from "next/navigation";
+import { deleteCookie, setCookie } from "./tokenHandlers";
+import { getDefaultDashboardRoute } from "@/utils/auth-utils";
+import jwt, { JwtPayload } from "jsonwebtoken";
 
 export async function registerUser(
-  _currentState: AuthActionState | null,
+  _currentState: any,
   formData: FormData,
-): Promise<AuthActionState> {
-  const parsed = registerZodSchema.safeParse({
+): Promise<any> {
+  const validatedFiled = registerZodSchema.safeParse({
     name: formData.get("name"),
     email: formData.get("email"),
     passwordHash: formData.get("password"),
   });
 
-  if (!parsed.success) {
+  // const validatedFiled = registerZodSchema.safeParse(data);
+
+  if (!validatedFiled.success) {
     return {
       success: false,
-      message: "Please correct the highlighted fields.",
-      errors: validationErrors(parsed.error.issues),
+      errors: validatedFiled.error.issues.map((issue) => ({
+        field: issue.path[0],
+        message: issue.message,
+      })),
     };
   }
 
-  const response = await apiRequest<AuthResponse>("/users/register", {
+  const res = await apiRequest("/users/register", {
     method: "POST",
-    body: JSON.stringify(parsed.data),
+    body: JSON.stringify(validatedFiled.data),
   });
 
-  return toActionState(response as ApiAuthResponse);
+  return res;
 }
 
 export async function loginUser(
-  _currentState: AuthActionState | null,
+  _currentState: any,
   formData: FormData,
-): Promise<AuthActionState> {
-  const parsed = loginZodSchema.safeParse({
+): Promise<any> {
+  const validatedFiled = loginZodSchema.safeParse({
     email: formData.get("email"),
     passwordHash: formData.get("password"),
   });
+  // console.log("data",data)
 
-  if (!parsed.success) {
+  // const validatedFiled = loginZodSchema.safeParse(data);
+  if (!validatedFiled.success) {
     return {
       success: false,
-      message: "Please correct the highlighted fields.",
-      errors: validationErrors(parsed.error.issues),
+      errors: validatedFiled.error.issues.map((issue) => ({
+        field: issue.path[0],
+        message: issue.message,
+      })),
     };
   }
 
-  const response = await apiRequest<AuthResponse>("/auth/login", {
+  const res = await apiRequest<ILoginResponse>("/auth/login", {
     method: "POST",
-    body: JSON.stringify(parsed.data),
+    body: JSON.stringify(validatedFiled.data),
+  });
+  if (!res.success) {
+    return { success: false, message: res.message };
+  }
+  // set token in httpOnly cookie
+  await setCookie("accessToken", res.data.accessToken, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "lax",
   });
 
-  return toActionState(response as ApiAuthResponse);
+  const verifiedToken: JwtPayload | string = jwt.verify(
+    res.data.accessToken,
+    process.env.JWT_ACCESS_SECRET as string,
+  );
+  if (typeof verifiedToken === "string") {
+    throw new Error("Invalid Token");
+  }
+  // redirect(`/otp-verify?email=${validatedFiled.data.email}`);
+  const userRole: TRole = verifiedToken.role;
+  redirect(getDefaultDashboardRoute(userRole) as string);
 }
+
+// logout
+export const logoutUser = async () => {
+  await deleteCookie("accessToken");
+  redirect("/login?loggedOut=true");
+};
+
+// get user profile from access token
+export const getUserProfile = async (): Promise<IUser | null> => {
+  const res = await apiRequest<IUser>("/users/profile", {
+    method: "GET",
+  });
+  return res.success ? res.data : null;
+};

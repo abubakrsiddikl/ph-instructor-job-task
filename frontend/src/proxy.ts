@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-import jwt, {type JwtPayload } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 
 import {
   getDefaultDashboardRoute,
@@ -9,7 +9,7 @@ import {
   isAuthRoute,
 } from "./utils/auth-utils";
 import { TRole } from "./types/auth.type";
-import { deleteCookie, getCookie } from "./services/auth/tokenHandlers";
+import { getCookie } from "./services/auth/tokenHandlers";
 
 export async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
@@ -17,22 +17,17 @@ export async function proxy(request: NextRequest) {
 
   let userRole: TRole | null = null;
   if (accessToken) {
-    const verifiedToken: JwtPayload | string = jwt.verify(
-      accessToken,
-      process.env.JWT_ACCESS_SECRET as string,
-    );
-    if (typeof verifiedToken === "string") {
-      await deleteCookie("accessToken");
-      return NextResponse.redirect(new URL("/login", request.url));
+    const tokenPayload = jwt.decode(accessToken);
+    if (tokenPayload && typeof tokenPayload !== "string") {
+      userRole = tokenPayload.role as TRole;
     }
-    userRole = verifiedToken.role;
   }
   const routeOwner = getRouteOwner(pathname);
 
   const isAuth = isAuthRoute(pathname);
 
   // Rule 1 : User is logged in and trying to access auth route. Redirect to default dashboard
-  if (accessToken && isAuth) {
+  if (accessToken && userRole && isAuth) {
     return NextResponse.redirect(
       new URL(getDefaultDashboardRoute(userRole as TRole)!, request.url),
     );
@@ -55,6 +50,9 @@ export async function proxy(request: NextRequest) {
 
   // Rule 5 : User is trying to access role based protected route
   if (routeOwner === "MENTOR" || routeOwner === "STUDENT") {
+    if (!userRole) {
+      return NextResponse.redirect(new URL("/login", request.url));
+    }
     if (userRole !== routeOwner) {
       return NextResponse.redirect(
         new URL(getDefaultDashboardRoute(userRole as TRole)!, request.url),
