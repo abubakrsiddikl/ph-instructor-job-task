@@ -1,7 +1,7 @@
 import { module } from "@prisma/composer";
 import { postgres } from "@prisma/composer-prisma-cloud/orm";
 
-import appContract  from "./src/prisma/contract.json";
+import appContract from "./src/prisma/contract.json" with { type: "json" };
 import app from "./service.ts";
 
 export default module("ph-instructor", ({ provision }) => {
