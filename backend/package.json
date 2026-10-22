@@ -21,7 +21,8 @@
     "migration:plan": "prisma migration plan",
     "migration:show": "prisma migration show",
     "migration:status": "prisma migration status",
-    "start": "node dist/server.mjs"
+    "start1": "node dist/server.mjs",
+    "start": "tsx src/server.ts"
   },
   "dependencies": {
     "@prisma/composer": "0.28.0",
