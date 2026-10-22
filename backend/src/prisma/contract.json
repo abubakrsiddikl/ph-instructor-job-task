@@ -42,8 +42,8 @@
                 "value": "STUDENT"
               },
               {
-                "name": "ADMIN",
-                "value": "ADMIN"
+                "name": "MENTOR",
+                "value": "MENTOR"
               }
             ]
           }
@@ -421,8 +421,8 @@
             "User": {
               "checks": [
                 {
-                  "expression": "\"role\" IN ('STUDENT', 'ADMIN')",
-                  "name": "User_role_check_482f18a5",
+                  "expression": "\"role\" IN ('STUDENT', 'MENTOR')",
+                  "name": "User_role_check_3a951b66",
                   "prefix": "User_role_check"
                 }
               ],
@@ -510,7 +510,7 @@
               "kind": "valueSet",
               "values": [
                 "STUDENT",
-                "ADMIN"
+                "MENTOR"
               ]
             }
           }
@@ -519,7 +519,7 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "a55022cbb2d729400561ba49319ede21190fed90c25ddd6b240127d736b9e9d9"
+    "storageHash": "726415c2f06b1d4919ca196d3f9bc2e3bd9fc70b9b4f5806cefdc6daef2b5bfb"
   },
   "execution": {
     "executionHash": "c3f1a245be87999ce2f366c7579a84af1f845ee5f317ec3aafa608833d060a47",

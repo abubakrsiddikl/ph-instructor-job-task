@@ -11,6 +11,7 @@ const globalErrorHandler = (
   let success = false;
   let message = err.message || "Something went wrong!";
   let error = err;
+  console.log(err);
   res.status(statusCode).json({
     success,
     message,

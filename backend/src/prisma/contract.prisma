@@ -1,7 +1,7 @@
 // use prisma-8
 enum UserRole {
   STUDENT
-  ADMIN
+  MENTOR
 }
 
 model User {

@@ -18,7 +18,7 @@ import type {
 } from '@prisma/orm-postgres/contract/types';
 
 export type StorageHash =
-  StorageHashBase<'a55022cbb2d729400561ba49319ede21190fed90c25ddd6b240127d736b9e9d9'>;
+  StorageHashBase<'726415c2f06b1d4919ca196d3f9bc2e3bd9fc70b9b4f5806cefdc6daef2b5bfb'>;
 export type ExecutionHash =
   ExecutionHashBase<'c3f1a245be87999ce2f366c7579a84af1f845ee5f317ec3aafa608833d060a47'>;
 export type ProfileHash =
@@ -251,7 +251,7 @@ export type FieldOutputTypes = {
       readonly id: CodecTypes['pg/text@1']['output'];
       readonly name: CodecTypes['pg/text@1']['output'];
       readonly passwordHash: CodecTypes['pg/text@1']['output'];
-      readonly role: 'STUDENT' | 'ADMIN';
+      readonly role: 'STUDENT' | 'MENTOR';
       readonly updatedAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
     };
   };
@@ -275,7 +275,7 @@ export type FieldInputTypes = {
       readonly id: CodecTypes['pg/text@1']['input'];
       readonly name: CodecTypes['pg/text@1']['input'];
       readonly passwordHash: CodecTypes['pg/text@1']['input'];
-      readonly role: 'STUDENT' | 'ADMIN';
+      readonly role: 'STUDENT' | 'MENTOR';
       readonly updatedAt: CodecTypes['pg/timestamptz-temporal@1']['input'];
     };
   };
@@ -299,7 +299,7 @@ export type StorageColumnTypes = {
       readonly id: CodecTypes['pg/text@1']['output'];
       readonly name: CodecTypes['pg/text@1']['output'];
       readonly passwordHash: CodecTypes['pg/text@1']['output'];
-      readonly role: 'STUDENT' | 'ADMIN';
+      readonly role: 'STUDENT' | 'MENTOR';
       readonly updatedAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
     };
   };
@@ -323,7 +323,7 @@ export type StorageColumnInputTypes = {
       readonly id: CodecTypes['pg/text@1']['input'];
       readonly name: CodecTypes['pg/text@1']['input'];
       readonly passwordHash: CodecTypes['pg/text@1']['input'];
-      readonly role: 'STUDENT' | 'ADMIN';
+      readonly role: 'STUDENT' | 'MENTOR';
       readonly updatedAt: CodecTypes['pg/timestamptz-temporal@1']['input'];
     };
   };
@@ -349,7 +349,7 @@ export namespace Models {
     id: CodecTypes['pg/text@1']['output'];
     name: CodecTypes['pg/text@1']['output'];
     passwordHash: CodecTypes['pg/text@1']['output'];
-    role: 'STUDENT' | 'ADMIN';
+    role: 'STUDENT' | 'MENTOR';
     updatedAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
     projects: public_Project[];
     readonly [RelationKeys]?: 'projects';
@@ -545,7 +545,7 @@ type ContractBase = Omit<
             };
             readonly UserRole: {
               readonly kind: 'valueSet';
-              readonly values: readonly ['STUDENT', 'ADMIN'];
+              readonly values: readonly ['STUDENT', 'MENTOR'];
             };
           };
         };
@@ -715,7 +715,7 @@ type ContractBase = Omit<
             readonly codecId: 'pg/text@1';
             readonly members: readonly [
               { readonly name: 'STUDENT'; readonly value: 'STUDENT' },
-              { readonly name: 'ADMIN'; readonly value: 'ADMIN' },
+              { readonly name: 'MENTOR'; readonly value: 'MENTOR' },
             ];
           };
         };

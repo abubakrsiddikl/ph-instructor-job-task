@@ -12,6 +12,6 @@ router.post(
   zodValidator(registerUserSchema),
   UserController.registerUser,
 );
-router.get("/profile", checkAuth(), UserController.getProfile);
+router.get("/profile", checkAuth("STUDENT","MENTOR"), UserController.getProfile);
 
 export const UserRoutes = router;
