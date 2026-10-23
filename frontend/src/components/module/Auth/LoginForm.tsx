@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState, useEffect } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { ArrowRight, LogIn } from "lucide-react";
 
 import InputFieldError from "@/components/shared/InputFieldError";
@@ -16,6 +16,15 @@ import { toast } from "sonner";
 
 export default function LoginForm() {
   const [state, formAction, isPending] = useActionState(loginUser, null);
+  const [credentials, setCredentials] = useState({ email: "", password: "" });
+
+  const fillDemoAccount = (role: "student" | "mentor") => {
+    setCredentials({
+      email: `${role}@gmail.com`,
+      password: "123456",
+    });
+  };
+
   useEffect(() => {
     if (state && !state.success && state?.message) {
       toast.error(state?.message);
@@ -27,14 +36,6 @@ export default function LoginForm() {
 
   return (
     <form action={formAction} className="space-y-5">
-      {/* {state?.message && (
-        <p
-          role="status"
-          className={`rounded-md border px-4 py-3 text-sm ${state?.success ? "border-emerald-200 bg-emerald-50 text-emerald-800" : "border-red-200 bg-red-50 text-red-800"}`}
-        >
-          {state?.message}
-        </p>
-      )} */}
       <FieldGroup className="gap-4">
         <Field>
           <FieldLabel htmlFor="email">Email address</FieldLabel>
@@ -44,6 +45,10 @@ export default function LoginForm() {
             type="email"
             autoComplete="email"
             placeholder="you@example.com"
+            value={credentials.email}
+            onChange={(event) =>
+              setCredentials((current) => ({ ...current, email: event.target.value }))
+            }
             required
           />
           <InputFieldError field="email" state={state} />
@@ -56,12 +61,36 @@ export default function LoginForm() {
             type="password"
             autoComplete="current-password"
             placeholder="Your password"
+            value={credentials.password}
+            onChange={(event) =>
+              setCredentials((current) => ({ ...current, password: event.target.value }))
+            }
             minLength={4}
             required
           />
           <InputFieldError field="password" state={state} />
         </Field>
       </FieldGroup>
+      <div className="grid grid-cols-2 gap-3">
+        <Button
+          type="button"
+          variant="outline"
+          className="h-10"
+          onClick={() => fillDemoAccount("student")}
+          disabled={isPending}
+        >
+          Student demo
+        </Button>
+        <Button
+          type="button"
+          variant="outline"
+          className="h-10"
+          onClick={() => fillDemoAccount("mentor")}
+          disabled={isPending}
+        >
+          Mentor demo
+        </Button>
+      </div>
       <Button
         type="submit"
         size="lg"
