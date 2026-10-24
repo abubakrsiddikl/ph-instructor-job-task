@@ -9,7 +9,7 @@ export const createProjectSchema = z.object({
 	name: z.string().trim().min(2).max(120),
 	repositoryUrl: webUrl,
 	liveUrl: webUrl.optional().or(z.literal("")),
-	description: z.string().trim().min(20).max(5000),
+	description: z.string().trim().min(2).max(5000),
 });
 
 export const updateProjectStatusSchema = z.object({

@@ -28,6 +28,8 @@ router.get(
   checkAuth("MENTOR"),
   ProjectController.getProjectStatistics,
 );
+
+// update project status
 router.patch(
   "/:id/status",
   checkAuth("MENTOR"),
